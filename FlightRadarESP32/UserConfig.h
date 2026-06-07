@@ -53,7 +53,15 @@ static const float DEFAULT_LOCAL_TIMEZONE_HOURS = 5.5f;
 
 // Default is ALWAYS so users can immediately verify the layer works.
 // Change to CONSTELLATION_AUTO_NIGHT if you only want it after local sunset.
-#define CONSTELLATION_MODE CONSTELLATION_AUTO_NIGHT
+#define CONSTELLATION_MODE CONSTELLATION_ALWAYS
+
+
+//====================================================
+// NETWORK / MEMORY CONFIGURATION
+//====================================================
+// Classic ESP32 may need this enabled if HTTPS fails.
+// This low-memory build keeps it disabled so the display does not flicker to FETCHING every update.
+#define FREE_DISPLAY_SPRITE_DURING_HTTPS 0
 
 //====================================================
 // AIRCRAFT / RADAR CONFIGURATION
@@ -62,11 +70,11 @@ static const float DEFAULT_LOCAL_TIMEZONE_HOURS = 5.5f;
 #define MAX_AIRCRAFT 25
 #endif
 #ifndef MAX_TRAIL_POINTS
-#define MAX_TRAIL_POINTS 40
+#define MAX_TRAIL_POINTS 16
 #endif
 
 static const uint32_t DISPLAY_INTERVAL_MS = 33;
-static const uint32_t TRAIL_INTERVAL_MS = 500;     // 40 points x 500 ms = around 20 seconds max trail memory
+static const uint32_t TRAIL_INTERVAL_MS = 1000;    // 16 points x 1000 ms = around 16 seconds trail history
 static const uint32_t INFO_TEMPLATE_INTERVAL_MS = 5000;
 static const uint32_t SELECT_SWITCH_INTERVAL_MS = 10000;
 static const uint32_t MAP_ZOOM_INTERVAL_MS = 40000;
@@ -78,8 +86,8 @@ static const uint32_t ADSB_RETRY_INTERVAL_MS = 60000;
 static const int ADSB_RADIUS_NM = 135;
 static const double OPENSKY_BOX_DEG = 2.35;
 
-static const size_t ADSB_JSON_DOC_BYTES = 65536;
-static const size_t OPENSKY_JSON_DOC_BYTES = 65536;
+static const size_t ADSB_JSON_DOC_BYTES = 32768;
+static const size_t OPENSKY_JSON_DOC_BYTES = 49152;
 
 static const int ZOOM_LEVEL_COUNT = 10;
 static const float ZOOM_LEVELS_KM[ZOOM_LEVEL_COUNT] = {

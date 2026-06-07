@@ -32,12 +32,23 @@ void initDisplay() {
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);
   delay(100);
+
   tft.init();
   tft.setRotation(0);
   tft.fillScreen(TFT_BLACK);
+
+  if (displayMutex == NULL) {
+    displayMutex = xSemaphoreCreateMutex();
+  }
+
+  if (displayMutex) xSemaphoreTake(displayMutex, portMAX_DELAY);
+
   sprite.setColorDepth(8);
   void *spritePtr = sprite.createSprite(SCREEN_W, SCREEN_H);
   if (spritePtr == NULL) {
+    spriteReady = false;
+    if (displayMutex) xSemaphoreGive(displayMutex);
+
     tft.fillScreen(TFT_BLACK);
     tft.setTextDatum(MC_DATUM);
     tft.setTextColor(TFT_RED, TFT_BLACK);
@@ -46,10 +57,78 @@ void initDisplay() {
     tft.drawString("RAM LOW", 120, 130, 2);
     while (true) delay(1000);
   }
+
   sprite.setSwapBytes(false);
+  spriteReady = true;
+  displaySuspendedForNetwork = false;
+
+  if (displayMutex) xSemaphoreGive(displayMutex);
+}
+
+void releaseDisplaySpriteForNetwork(const char *message) {
+#if FREE_DISPLAY_SPRITE_DURING_HTTPS
+  displaySuspendedForNetwork = true;
+
+  if (displayMutex) xSemaphoreTake(displayMutex, portMAX_DELAY);
+
+  if (spriteReady) {
+    sprite.deleteSprite();
+    spriteReady = false;
+  }
+
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(C_ACTIVE, TFT_BLACK);
+  tft.drawString("FETCHING", 120, 105, 2);
+  tft.setTextColor(C_TEXT_DIM, TFT_BLACK);
+  tft.drawString(message ? message : "network", 120, 128, 1);
+
+  if (displayMutex) xSemaphoreGive(displayMutex);
+
+  delay(25);
+#else
+  (void)message;
+#endif
+}
+
+void restoreDisplaySpriteAfterNetwork() {
+#if FREE_DISPLAY_SPRITE_DURING_HTTPS
+  if (displayMutex) xSemaphoreTake(displayMutex, portMAX_DELAY);
+
+  if (!spriteReady) {
+    sprite.setColorDepth(8);
+    void *spritePtr = sprite.createSprite(SCREEN_W, SCREEN_H);
+
+    if (spritePtr == NULL) {
+      displaySuspendedForNetwork = true;
+      tft.fillScreen(TFT_BLACK);
+      tft.setTextDatum(MC_DATUM);
+      tft.setTextColor(TFT_RED, TFT_BLACK);
+      tft.drawString("SPRITE FAIL", 120, 105, 2);
+      tft.setTextColor(TFT_WHITE, TFT_BLACK);
+      tft.drawString("AFTER FETCH", 120, 130, 2);
+      if (displayMutex) xSemaphoreGive(displayMutex);
+      return;
+    }
+
+    sprite.setSwapBytes(false);
+    spriteReady = true;
+  }
+
+  displaySuspendedForNetwork = false;
+
+  if (displayMutex) xSemaphoreGive(displayMutex);
+#endif
 }
 
 void drawStartupScreen(const char *message) {
+  if (displayMutex) xSemaphoreTake(displayMutex, portMAX_DELAY);
+
+  if (!spriteReady) {
+    if (displayMutex) xSemaphoreGive(displayMutex);
+    return;
+  }
+
   sprite.fillSprite(C_BG);
   sprite.drawCircle(120, 120, 108, C_OUTER_RING);
   sprite.drawCircle(120, 120, 82, C_GRID_DIM);
@@ -65,6 +144,8 @@ void drawStartupScreen(const char *message) {
   sprite.setTextColor(C_TEXT_DIM, C_BG);
   sprite.drawString(message, 120, 148, 2);
   sprite.pushSprite(0, 0);
+
+  if (displayMutex) xSemaphoreGive(displayMutex);
 }
 
 static void drawOneConstellation(int constellationIndex, int positionIndex, int offsetJitter) {
@@ -417,6 +498,8 @@ static void drawSelectedAircraftInfo() {
 }
 
 void drawDisplayFrame() {
+  if (!spriteReady || displaySuspendedForNetwork) return;
+
   snapshotAircraftForRender();
   drawRadarGrid();
   drawSunMoonTracker();
@@ -431,9 +514,14 @@ void drawDisplayFrame() {
 }
 
 void updateDisplay() {
+  if (displaySuspendedForNetwork || !spriteReady) return;
+
   uint32_t now = millis();
   if (lastDisplayMs == 0 || now - lastDisplayMs >= DISPLAY_INTERVAL_MS) {
     lastDisplayMs = now;
+
+    if (displayMutex) xSemaphoreTake(displayMutex, portMAX_DELAY);
     drawDisplayFrame();
+    if (displayMutex) xSemaphoreGive(displayMutex);
   }
 }

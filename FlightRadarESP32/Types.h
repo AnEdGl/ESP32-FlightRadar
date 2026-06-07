@@ -23,15 +23,13 @@ struct ConstellationPattern {
 };
 
 struct TrailPoint {
-  float lat;
-  float lon;
   float distanceKm;
   float bearingDeg;
   bool valid;
 };
 
 #ifndef MAX_TRAIL_POINTS
-#define MAX_TRAIL_POINTS 40
+#define MAX_TRAIL_POINTS 16
 #endif
 
 struct Aircraft {

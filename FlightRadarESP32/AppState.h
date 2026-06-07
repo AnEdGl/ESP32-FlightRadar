@@ -9,6 +9,10 @@ extern TFT_eSPI tft;
 extern TFT_eSprite sprite;
 extern WiFiManager wifiManager;
 extern SemaphoreHandle_t aircraftMutex;
+extern SemaphoreHandle_t displayMutex;
+
+extern volatile bool displaySuspendedForNetwork;
+extern volatile bool spriteReady;
 
 extern Aircraft aircraft[MAX_AIRCRAFT];
 extern Aircraft fetchAircraft[MAX_AIRCRAFT];

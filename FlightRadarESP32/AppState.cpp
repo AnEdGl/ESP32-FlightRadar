@@ -5,6 +5,10 @@ TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite sprite = TFT_eSprite(&tft);
 WiFiManager wifiManager;
 SemaphoreHandle_t aircraftMutex = NULL;
+SemaphoreHandle_t displayMutex = NULL;
+
+volatile bool displaySuspendedForNetwork = false;
+volatile bool spriteReady = false;
 
 Aircraft aircraft[MAX_AIRCRAFT];
 Aircraft fetchAircraft[MAX_AIRCRAFT];

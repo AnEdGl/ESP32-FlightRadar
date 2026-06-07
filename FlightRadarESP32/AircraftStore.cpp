@@ -123,8 +123,6 @@ void copyTrail(Aircraft &dst, const Aircraft &src) {
 void addTrailPointLocked(Aircraft &a) {
   if (!a.valid) return;
   a.trailHead = (a.trailHead + 1) % MAX_TRAIL_POINTS;
-  a.trail[a.trailHead].lat = a.lat;
-  a.trail[a.trailHead].lon = a.lon;
   a.trail[a.trailHead].distanceKm = a.distanceKm;
   a.trail[a.trailHead].bearingDeg = a.bearingDeg;
   a.trail[a.trailHead].valid = true;

@@ -167,6 +167,10 @@ FlightRadarESP32/
 └── RadarRenderer.*          TFT drawing code
 ```
 
+## Memory profile
+
+This build uses `MAX_TRAIL_POINTS = 16` and `TRAIL_INTERVAL_MS = 1000`, giving about 16 seconds of trail history while keeping enough contiguous heap for HTTPS on classic ESP32 boards. `FREE_DISPLAY_SPRITE_DURING_HTTPS` is disabled by default to avoid the screen switching to the FETCHING page every 10 seconds. If HTTPS fails on a very memory-constrained board, enable it in `FlightRadarESP32/UserConfig.h`.
+
 ## Troubleshooting
 
 ### Display is black
