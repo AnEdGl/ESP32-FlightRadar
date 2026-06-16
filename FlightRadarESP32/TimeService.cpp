@@ -26,6 +26,6 @@ int getFiveMinuteSlot() {
 }
 
 float getFastSweepAngle() {
-  uint32_t ms = millis() % 1000;
-  return normalizeAngle((float)ms * 0.36f);
+  uint32_t ms = millis() % 2000;
+  return normalizeAngle((float)ms * 0.18f);
 }
