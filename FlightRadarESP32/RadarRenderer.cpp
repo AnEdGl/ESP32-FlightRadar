@@ -526,9 +526,13 @@ void drawDisplayFrame() {
 
   snapshotAircraftForRender();
   drawRadarGrid();
+#if SHOW_SUN_MOON_TRACKER
   drawSunMoonTracker();
+#endif
   drawRadarSweep();
+#if SHOW_TIME_DOTS
   drawTimeDots();
+#endif
   drawAircraftTrails();
   drawAirportMarkers();
   drawSelectedAircraftInfo();
