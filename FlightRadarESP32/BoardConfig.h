@@ -21,7 +21,7 @@
 // DISPLAY GEOMETRY
 //====================================================
 static const int SCREEN_W = 240;
-static const int SCREEN_H = 240;
+static const int SCREEN_H = 320;
 
 static const int ROUND_CX = 120;
 static const int ROUND_CY = 120;
@@ -32,9 +32,9 @@ static const int RADAR_CY = 120;
 static const int RADAR_R  = 108;
 
 static const int INFO_CX = 120;
-static const int INFO_Y1 = 162;
-static const int INFO_Y2 = 178;
-static const int INFO_Y3 = 192;
+static const int INFO_Y1 = 258;
+static const int INFO_Y2 = 278;
+static const int INFO_Y3 = 298;
 
 //====================================================
 // COLORS
