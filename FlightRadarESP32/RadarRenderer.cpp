@@ -529,7 +529,9 @@ void drawDisplayFrame() {
 #if SHOW_SUN_MOON_TRACKER
   drawSunMoonTracker();
 #endif
+#if SHOW_RADAR_SWEEP
   drawRadarSweep();
+#endif
 #if SHOW_TIME_DOTS
   drawTimeDots();
 #endif
