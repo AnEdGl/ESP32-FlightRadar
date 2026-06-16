@@ -61,6 +61,7 @@ static const float DEFAULT_LOCAL_TIMEZONE_HOURS = 1.0f;
 // 1 = anzeigen, 0 = ausblenden
 #define SHOW_SUN_MOON_TRACKER 0
 #define SHOW_TIME_DOTS        0
+#define SHOW_RADAR_SWEEP      1
 
 //====================================================
 // NETZWERK- / SPEICHERKONFIGURATION
