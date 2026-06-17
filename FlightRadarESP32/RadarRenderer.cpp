@@ -480,6 +480,7 @@ static void drawSelectedAircraftInfo() {
 
   char bestName[24], altText[12];
   char line1[48], line2[48], line3[48];
+  float speedKmh = a.speedKts * 1.852f;
 
   getBestAircraftDisplayName(a, bestName, sizeof(bestName));
   formatAltitudeShort(a.altitudeFt, altText, sizeof(altText));
@@ -488,9 +489,9 @@ static void drawSelectedAircraftInfo() {
   snprintf(line2, sizeof(line2), "%.1fkm | %s", a.distanceKm, altText);
 
   if (hasUsefulText(a.registration) && a.registration[0] != '-') {
-    snprintf(line3, sizeof(line3), "%s | %.0fkt", a.registration, a.speedKts);
+    snprintf(line3, sizeof(line3), "%s | %.0fkm/h", a.registration, speedKmh);
   } else {
-    snprintf(line3, sizeof(line3), "%d/%d | %.0fkt", visibleRank, renderVisibleAircraftCount, a.speedKts);
+    snprintf(line3, sizeof(line3), "%d/%d | %.0fkm/h", visibleRank, renderVisibleAircraftCount, speedKmh);
   }
 
   sprite.setTextColor(C_ACTIVE);
