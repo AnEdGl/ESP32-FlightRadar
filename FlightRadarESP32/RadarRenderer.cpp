@@ -485,10 +485,12 @@ static void drawSelectedAircraftInfo() {
 
   if (hasUsefulText(a.typeCode) && hasUsefulText(a.operatorName)) {
     snprintf(typeOperator, sizeof(typeOperator), "%s %s", a.typeCode, a.operatorName);
-  } else if (hasUsefulText(a.typeCode)) {
-    snprintf(typeOperator, sizeof(typeOperator), "%s", a.typeCode);
-  } else if (hasUsefulText(a.operatorName)) {
-    snprintf(typeOperator, sizeof(typeOperator), "%s", a.operatorName);
+  } else if (hasUsefulText(a.model)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.model);
+  } else if (hasUsefulText(a.registration)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.registration);
+  } else if (hasUsefulText(a.callsign)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.callsign);
   } else {
     snprintf(typeOperator, sizeof(typeOperator), "%s", a.icao);
   }
