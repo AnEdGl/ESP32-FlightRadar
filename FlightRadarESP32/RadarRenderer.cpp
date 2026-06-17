@@ -476,30 +476,44 @@ static void drawSelectedAircraftInfo() {
   }
 
   Aircraft &a = renderAircraft[renderSelectedIndex];
-  int visibleRank = visibleRankForIndex(renderSelectedIndex);
-
-  char bestName[24], altText[12];
+  char typeOperator[48];
+  char altText[12];
   char line1[48], line2[48], line3[48];
   float speedKmh = a.speedKts * 1.852f;
 
-  getBestAircraftDisplayName(a, bestName, sizeof(bestName));
   formatAltitudeShort(a.altitudeFt, altText, sizeof(altText));
 
-  snprintf(line1, sizeof(line1), "%s | %s", a.callsign, bestName);
+  if (hasUsefulText(a.typeCode) && hasUsefulText(a.operatorName)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s %s", a.typeCode, a.operatorName);
+  } else if (hasUsefulText(a.typeCode) && hasUsefulText(a.operatorCountry)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s %s", a.typeCode, a.operatorCountry);
+  } else if (hasUsefulText(a.typeCode)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.typeCode);
+  } else if (hasUsefulText(a.operatorName)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.operatorName);
+  } else if (hasUsefulText(a.operatorCountry)) {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.operatorCountry);
+  } else {
+    snprintf(typeOperator, sizeof(typeOperator), "%s", a.icao);
+  }
+
+  snprintf(line1, sizeof(line1), "%s | %s", a.callsign, typeOperator);
   snprintf(line2, sizeof(line2), "%.1fkm | %s", a.distanceKm, altText);
 
   if (hasUsefulText(a.registration) && a.registration[0] != '-') {
     snprintf(line3, sizeof(line3), "%s | %.0fkm/h", a.registration, speedKmh);
   } else {
-    snprintf(line3, sizeof(line3), "%d/%d | %.0fkm/h", visibleRank, renderVisibleAircraftCount, speedKmh);
+    line3[0] = '\0';
   }
 
   sprite.setTextColor(C_ACTIVE);
   sprite.drawString(line1, INFO_CX, INFO_Y1, 2);
   sprite.setTextColor(C_TEXT);
   sprite.drawString(line2, INFO_CX, INFO_Y2, 2);
-  sprite.setTextColor(C_INFO_TEXT_DIM);
-  sprite.drawString(line3, INFO_CX, INFO_Y3, 2);
+  if (line3[0]) {
+    sprite.setTextColor(C_INFO_TEXT_DIM);
+    sprite.drawString(line3, INFO_CX, INFO_Y3, 2);
+  }
 }
 
 void drawDisplayFrame() {
