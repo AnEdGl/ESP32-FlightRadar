@@ -485,14 +485,10 @@ static void drawSelectedAircraftInfo() {
 
   if (hasUsefulText(a.typeCode) && hasUsefulText(a.operatorName)) {
     snprintf(typeOperator, sizeof(typeOperator), "%s %s", a.typeCode, a.operatorName);
-  } else if (hasUsefulText(a.typeCode) && hasUsefulText(a.operatorCountry)) {
-    snprintf(typeOperator, sizeof(typeOperator), "%s %s", a.typeCode, a.operatorCountry);
   } else if (hasUsefulText(a.typeCode)) {
     snprintf(typeOperator, sizeof(typeOperator), "%s", a.typeCode);
   } else if (hasUsefulText(a.operatorName)) {
     snprintf(typeOperator, sizeof(typeOperator), "%s", a.operatorName);
-  } else if (hasUsefulText(a.operatorCountry)) {
-    snprintf(typeOperator, sizeof(typeOperator), "%s", a.operatorCountry);
   } else {
     snprintf(typeOperator, sizeof(typeOperator), "%s", a.icao);
   }
@@ -503,17 +499,15 @@ static void drawSelectedAircraftInfo() {
   if (hasUsefulText(a.registration) && a.registration[0] != '-') {
     snprintf(line3, sizeof(line3), "%s | %.0fkm/h", a.registration, speedKmh);
   } else {
-    line3[0] = '\0';
+    snprintf(line3, sizeof(line3), "%.0fkm/h", speedKmh);
   }
 
   sprite.setTextColor(C_ACTIVE);
   sprite.drawString(line1, INFO_CX, INFO_Y1, 2);
   sprite.setTextColor(C_TEXT);
   sprite.drawString(line2, INFO_CX, INFO_Y2, 2);
-  if (line3[0]) {
-    sprite.setTextColor(C_INFO_TEXT_DIM);
-    sprite.drawString(line3, INFO_CX, INFO_Y3, 2);
-  }
+  sprite.setTextColor(C_INFO_TEXT_DIM);
+  sprite.drawString(line3, INFO_CX, INFO_Y3, 2);
 }
 
 void drawDisplayFrame() {
